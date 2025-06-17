@@ -5,11 +5,16 @@ import Log from './components/Log.jsx';
 import {WINNING_COMBINATIONS} from './winning-combinations.js';
 import GameOver from './components/GameOver.jsx';
 
-const initialGameboard = [
+const INITIAL_GAME_BOARD = [
     [null, null, null],
     [null, null, null],
     [null, null, null],
 ];
+
+const PLAYERS = {
+    'X': 'Player 1',
+    'O': 'Player 2'
+}
 
 function deriveActivePlayer(gameTurns) {
     let currentPlayer = 'X';
@@ -21,24 +26,7 @@ function deriveActivePlayer(gameTurns) {
     return currentPlayer;
 }
 
-function App() {
-    const [players, setPlayers] = useState({
-        'X': 'Player 1',
-        'O': 'Player 2'
-    });
-    const [gameTurns, setGameTurns] = useState([]);
-
-    const activePlayer = deriveActivePlayer(gameTurns);
-
-    let gameBoard = [...initialGameboard.map(array => [...array])];
-
-    for (const turn of gameTurns) {
-        const {square, player} = turn;
-        const {row, col} = square;
-
-        gameBoard[row][col] = player;
-    }
-
+function deriveWinner(gameBoard, players) {
     let winner = null;
 
     for (const combination of WINNING_COMBINATIONS) {
@@ -55,18 +43,39 @@ function App() {
         }
     }
 
+    return winner;
+}
+
+function deriveGameBoard(gameTurns) {
+    let gameBoard = [...INITIAL_GAME_BOARD.map(array => [...array])];
+
+    for (const turn of gameTurns) {
+        const {square, player} = turn;
+        const {row, col} = square;
+
+        gameBoard[row][col] = player;
+    }
+
+    return gameBoard;
+}
+
+function App() {
+    const [players, setPlayers] = useState(PLAYERS);
+    const [gameTurns, setGameTurns] = useState([]);
+
+    const activePlayer = deriveActivePlayer(gameTurns);
+    const gameBoard = deriveGameBoard(gameTurns);
+    const winner = deriveWinner(gameBoard, players);
     const hasDraw = gameTurns.length === 9 && winner === null;
 
     function handleSelectSquare(rowIndex, colIndex) {
         setGameTurns((prevTurns) => {
             let currentPlayer = deriveActivePlayer(prevTurns);
 
-            const updatedTurns = [
+            return [
                 {square: {row: rowIndex, col: colIndex}, player: currentPlayer},
                 ...prevTurns
             ];
-
-            return updatedTurns;
         });
     }
 
@@ -81,8 +90,6 @@ function App() {
                 [symbol]: newName,
             };
         });
-        console.log('handlePlayerNameChange');
-        console.log(players);
     }
 
     return <main>
