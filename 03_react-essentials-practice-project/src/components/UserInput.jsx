@@ -18,11 +18,13 @@ export default function UserInput({userInput, onChange}) {
         </div>
         <div className="input-group">
             <UserInputField
+                type="expectedReturn"
                 label="Expected Return"
                 value={userInput.expectedReturn}
                 onChange={onChange}
             />
             <UserInputField
+                type="duration"
                 label="Duration"
                 value={userInput.duration}
                 onChange={onChange}

@@ -1,8 +1,9 @@
 import {formatter} from '../util/investment.js';
 
-export default function Result({results}) {
+export default function Result({results, hasValidUserInput}) {
     return <section id="result">
-        <table>
+        {hasValidUserInput === false && <p className="center">Please enter valid data.</p>}
+        {hasValidUserInput === true && <table>
             <thead>
             <tr>
                 <td>Year</td>
@@ -24,6 +25,6 @@ export default function Result({results}) {
                 </tr>;
             })}
             </tbody>
-        </table>
+        </table>}
     </section>;
 }

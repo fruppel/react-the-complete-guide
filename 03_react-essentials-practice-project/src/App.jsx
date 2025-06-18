@@ -22,12 +22,19 @@ function App() {
     }
 
     const results = deriveResults(userInput);
+    const hasValidUserInput = userInput.duration > 0;
 
     return (
         <>
             <Header />
-            <UserInput userInput={userInput} onChange={updateUserInput} />
-            <Result results={results} />
+            <UserInput
+                userInput={userInput}
+                onChange={updateUserInput}
+            />
+            <Result
+                results={results}
+                hasValidUserInput={hasValidUserInput}
+            />
         </>
 
     );
