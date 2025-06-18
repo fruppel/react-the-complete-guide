@@ -1,34 +1,36 @@
 import {useState} from 'react';
 import {deriveResults} from './util/result.js';
 import Header from './components/Header.jsx';
-import UserInput from './components/UserInput.jsx';
 import Result from './components/Result.jsx';
+import UserInput from './components/UserInput.jsx';
 
 function App() {
-    const [initialInvestment, setInitialInvestment] = useState('');
-    const [annualInvestment, setAnnualInvestment] = useState('');
-    const [expectedReturn, setExpectedReturn] = useState('');
-    const [duration, setDuration] = useState('');
+    const [userInput, setUserInput] = useState({
+        initialInvestment: 15000,
+        annualInvestment: 900,
+        expectedReturn: 5.5,
+        duration: 10
+    });
 
-    const results = deriveResults(initialInvestment, annualInvestment, expectedReturn, duration);
+    function updateUserInput(key, value) {
+        setUserInput(prevState => {
+            return {
+                ...prevState,
+                [key]: +value,
+            };
+        });
+    }
+
+    const results = deriveResults(userInput);
 
     return (
         <>
             <Header />
-            <section id="user-input">
-                <div className="input-group">
-                    <UserInput label="Initial Investment" value={initialInvestment} onChange={setInitialInvestment}/>
-                    <UserInput label="Annual Investment" value={annualInvestment} onChange={setAnnualInvestment}/>
-                </div>
-                <div className="input-group">
-                    <UserInput label="Expected Return" value={expectedReturn} onChange={setExpectedReturn}/>
-                    <UserInput label="Duration" value={duration} onChange={setDuration}/>
-                </div>
-            </section>
+            <UserInput userInput={userInput} onChange={updateUserInput} />
             <Result results={results} />
         </>
 
-    )
+    );
 }
 
 export default App

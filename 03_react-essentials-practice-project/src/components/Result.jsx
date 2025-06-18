@@ -13,13 +13,16 @@ export default function Result({results}) {
             </tr>
             </thead>
             <tbody>
-            {results.map((row) => <tr key={row.year}>
-                <td>{row.year}</td>
-                <td>{formatter.format(row.valueEndOfYear)}</td>
-                <td>{formatter.format(row.interest)}</td>
-                <td>{formatter.format(row.totalInterest)}</td>
-                <td>{formatter.format(row.totalInvested)}</td>
-            </tr>)}
+            {results.map((row) => {
+                let totalInvested = row.valueEndOfYear - row.interest;
+                return <tr key={row.year}>
+                    <td>{row.year}</td>
+                    <td>{formatter.format(row.valueEndOfYear)}</td>
+                    <td>{formatter.format(row.interest)}</td>
+                    <td>{formatter.format(row.totalInterest)}</td>
+                    <td>{formatter.format(totalInvested)}</td>
+                </tr>;
+            })}
             </tbody>
         </table>
     </section>;
