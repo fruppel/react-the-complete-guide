@@ -1,7 +1,8 @@
 import {useState} from 'react';
-import investementCalculatorLogo from './assets/investment-calculator-logo.png';
-import {calculateInvestmentResults, formatter} from './util/investment.js';
+import {deriveResults} from './util/result.js';
+import Header from './components/Header.jsx';
 import UserInput from './components/UserInput.jsx';
+import Result from './components/Result.jsx';
 
 function App() {
     const [initialInvestment, setInitialInvestment] = useState('');
@@ -9,35 +10,11 @@ function App() {
     const [expectedReturn, setExpectedReturn] = useState('');
     const [duration, setDuration] = useState('');
 
-    function deriveResults() {
-        let calculatedResults = calculateInvestmentResults({
-            initialInvestment, annualInvestment, expectedReturn, duration
-        });
-
-        let totalInterest = 0;
-        let totalInvested = parseFloat(initialInvestment);
-
-        return calculatedResults.map(result => {
-            totalInterest += result.interest;
-            totalInvested += result.annualInvestment;
-
-            return {
-                ...result,
-                totalInterest: totalInterest,
-                totalInvested: totalInvested
-            }
-        });
-    }
-
-    const results = deriveResults();
+    const results = deriveResults(initialInvestment, annualInvestment, expectedReturn, duration);
 
     return (
         <>
-            <section id="header">
-                <img src={investementCalculatorLogo} alt="Calculator logo"/>
-                <h1>React Investment Calculator</h1>
-            </section>
-
+            <Header />
             <section id="user-input">
                 <div className="input-group">
                     <UserInput label="Initial Investment" value={initialInvestment} onChange={setInitialInvestment}/>
@@ -48,29 +25,7 @@ function App() {
                     <UserInput label="Duration" value={duration} onChange={setDuration}/>
                 </div>
             </section>
-
-            <section id="result">
-                <table>
-                    <thead>
-                    <tr>
-                        <td>Year</td>
-                        <td>Investment Value</td>
-                        <td>Interest (Year)</td>
-                        <td>Total Interest</td>
-                        <td>Invested Capital</td>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {results.map((row) => <tr key={row.year}>
-                        <td>{row.year}</td>
-                        <td>{formatter.format(row.valueEndOfYear)}</td>
-                        <td>{formatter.format(row.interest)}</td>
-                        <td>{formatter.format(row.totalInterest)}</td>
-                        <td>{formatter.format(row.totalInvested)}</td>
-                    </tr>)}
-                    </tbody>
-                </table>
-            </section>
+            <Result results={results} />
         </>
 
     )
